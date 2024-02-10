@@ -9,6 +9,7 @@ total_players = 0
 
 filename = 'matches_' + datetime.now().strftime("%Y%m%d_%H%M") + '.csv'
 filename2 = 'player_matches_' + datetime.now().strftime("%Y%m%d_%H%M") + '.csv'
+
 with open('results/' + filename, 'w', newline='', encoding='utf-8') as csvfile:
     with open('results/' + filename2, 'w', newline='', encoding='utf-8') as csvfile2:
         csv_writer = csv.writer(csvfile)
