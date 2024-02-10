@@ -27,7 +27,8 @@ print('Page: ' + str(page) + ' for ' + str(total_players) + ' total matches')
 #replace all this with the actual bits in the other file
 #for match in r['matches']:
 #    print(match['cached_at'])
-#    cached_at = parser.parse(match['cached_at'])
+#    cached_at = parser.parse(match['created_at'])
+#    print (last_pulled <= cached_at)
 
 with open('results/' + filename, 'w', newline='', encoding='utf-8') as csvfile:
     with open('results/' + filename2, 'w', newline='', encoding='utf-8') as csvfile2:
@@ -58,7 +59,7 @@ with open('results/' + filename, 'w', newline='', encoding='utf-8') as csvfile:
                             'structures_killed',
                             'creep_resources_collected',
                             ])
-        while page + 1 < total_players / 100 or page == 1 or cached_at >= last_pulled:
+        while (page + 1 < total_players / 100 or page == 1) and created_at >= last_pulled:
             time.sleep(1)
             params = {'page': page}
             response = requests.get(url, params=params)
@@ -103,4 +104,5 @@ with open('results/' + filename, 'w', newline='', encoding='utf-8') as csvfile:
                         player['scores']['creep_resources_collected']
                     ])
             page += 1
-            cached_at = parser.parse(match['cached_at'])
+            created_at = parser.parse(match['created_at'])
+            print(created_at)
