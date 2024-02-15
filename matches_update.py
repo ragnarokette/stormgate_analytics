@@ -1,12 +1,9 @@
-#now that I can filter the requests on a time range I can:
-#get the last pull time programatically somehow (probably by just doing it daily with a cronjob idk?)
-#modify the code from api_test to only pull things in the right date range
-#finally, figure out a way to update the tables
-
-
+#todo: either change file names to always use the same name and then save a second dated copy after insertion or figure out a way to select the most recent version idk
+#todo: build a dashboard of some kind
 import requests
 import csv
 import time
+import sqlite3
 from dateutil import parser
 from datetime import datetime
 
@@ -17,11 +14,19 @@ total_players = 0
 filename = 'matches_' + datetime.now().strftime("%Y%m%d_%H%M") + '.csv'
 filename2 = 'player_matches_' + datetime.now().strftime("%Y%m%d_%H%M") + '.csv'
 
+con = sqlite3.connect("StormgateDB")
+cur = con.cursor()
+
+cur.execute("select max(created_at) from matches;")
+
+max_date = cur.fetchone()
+
 params = {'page': page}
 response = requests.get(url, params=params)
 r = response.json()
 total_players = r['total']
-last_pulled = datetime(2024, 2, 6, 21, 19, 0)
+last_pulled = parser.parse(max_date[0])
+created_at = last_pulled
 print('Page: ' + str(page) + ' for ' + str(total_players) + ' total matches')
 
 #replace all this with the actual bits in the other file
@@ -106,3 +111,6 @@ with open('results/' + filename, 'w', newline='', encoding='utf-8') as csvfile:
             page += 1
             created_at = parser.parse(match['created_at'])
             print(created_at)
+
+con.commit()
+con.close()
